@@ -187,6 +187,7 @@ GpioButtonMapping button_mappings[] = {
     { &InputState::left,        4 },
     { &InputState::down,        3 },
     { &InputState::right,       2 },
+    { &InputState::dpad_mod,    1 },
 
     { &InputState::mod_x,       6 },
     { &InputState::mod_y,       7 },
@@ -242,8 +243,8 @@ void setup() {
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
 
     // Debug output for timing stuff on gp1
-    gpio_init(1);
-    gpio_set_dir(1, GPIO_OUT);
+    //gpio_init(1);
+    //gpio_set_dir(1, GPIO_OUT);
 
     // Create array of input sources to be used.
     static InputSource *input_sources[] = { gpio_input };
