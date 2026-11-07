@@ -62,11 +62,11 @@ jobs:
           # incompatible metadata field and retry without touching gameplay code.
           if ! pio run -e pico; then
             HEADER=".pio/libdeps/pico/joybus-pio/src/joybus.pio.h"
-            if ! test -f "$HEADER" || ! grep -q 'pio_version = joybus_pio_version' "$HEADER"; then
+            if ! test -f "$HEADER" || ! grep -Eq '^[[:space:]]*\.pio_version[[:space:]]*=' "$HEADER"; then
               echo "Build failed for an unrelated reason; see log above."
               exit 1
             fi
-            sed -i '/\.pio_version = joybus_pio_version,/d' "$HEADER"
+            sed -i '/^[[:space:]]*\.pio_version[[:space:]]*=/d' "$HEADER"
             pio run -e pico
           fi
 
