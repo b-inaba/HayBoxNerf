@@ -1,0 +1,51 @@
+name: Build Tadpole nerfed HayBox
+
+on:
+  push:
+    branches:
+      - tadpole-nerfed-custom
+    paths:
+      - 'tadpole/**'
+      - '.github/workflows/tadpole.yml'
+  workflow_dispatch:
+
+jobs:
+  build-tadpole:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout custom Tadpole patch
+        uses: actions/checkout@v4
+
+      - name: Checkout CarVac nerfed HayBox source
+        uses: actions/checkout@v4
+        with:
+          repository: CarVac/HayBox
+          path: upstream-haybox
+          persist-credentials: false
+
+      - name: Apply custom Tadpole mapping
+        working-directory: upstream-haybox
+        run: |
+          git apply --check ../tadpole/tadpole_nerfed_haybox.patch
+          git apply ../tadpole/tadpole_nerfed_haybox.patch
+          git diff --check
+          git diff --stat
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PlatformIO
+        run: python -m pip install platformio
+
+      - name: Compile Pico UF2
+        working-directory: upstream-haybox
+        run: pio run -e pico
+
+      - name: Upload Tadpole UF2
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tadpole-CarVac-nerfed-custom-UF2
+          path: upstream-haybox/.pio/build/pico/firmware.uf2
+          if-no-files-found: error
