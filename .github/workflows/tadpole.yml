@@ -40,7 +40,7 @@ jobs:
       - name: Install PlatformIO
         run: python -m pip install platformio
 
-      - name: Pin compatible RP2040 compiler for Arduino-Pico 3.6.3
+      - name: Pin GCC 12.4 and pioasm from verified upstream release
         working-directory: upstream-haybox
         run: |
           # Avoid unpinned GCC 16 and the incompatible modern pioasm.
@@ -49,8 +49,8 @@ jobs:
           [env:pico]
           platform_packages =
               framework-arduinopico@https://github.com/earlephilhower/arduino-pico.git#3.6.3
-              toolchain-rp2040-earlephilhower@~5.120300.0
-              tool-pioasm-rp2040-earlephilhower@~5.120300.0
+              toolchain-rp2040-earlephilhower@https://github.com/earlephilhower/pico-quick-toolchain/releases/download/2.3.0/x86_64-linux-gnu.arm-none-eabi-dfd82b2.240919.tar.gz
+              tool-pioasm-rp2040-earlephilhower@https://github.com/earlephilhower/pico-quick-toolchain/releases/download/2.3.0/x86_64-linux-gnu.pioasm-efe2103.240919.tar.gz
           EOF
 
       - name: Compile Pico UF2
