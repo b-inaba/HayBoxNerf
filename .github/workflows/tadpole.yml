@@ -42,7 +42,20 @@ jobs:
 
       - name: Compile Pico UF2
         working-directory: upstream-haybox
-        run: pio run -e pico
+        run: |
+          # The current pioasm generates a field missing from the older
+          # RP2040 SDK embedded in Arduino-Pico 3.6.3.
+          # First run creates joybus.pio.h. On failure, strip that
+          # incompatible metadata field and retry without touching gameplay code.
+          if ! pio run -e pico; then
+            HEADER=".pio/libdeps/pico/joybus-pio/src/joybus.pio.h"
+            if ! test -f "$HEADER" || ! grep -q 'pio_version = joybus_pio_version' "$HEADER"; then
+              echo "Build failed for an unrelated reason; see log above."
+              exit 1
+            fi
+            sed -i '/\.pio_version = joybus_pio_version,/d' "$HEADER"
+            pio run -e pico
+          fi
 
       - name: Upload Tadpole UF2
         uses: actions/upload-artifact@v4
