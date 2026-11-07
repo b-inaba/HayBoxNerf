@@ -1,0 +1,33 @@
+--- a/config/pico/config.cpp
++++ b/config/pico/config.cpp
+@@ -202,14 +202,14 @@
+     { &InputState::c_right,     16},
+ 
+     { &InputState::b,           26},
+     { &InputState::x,           21},
+-    { &InputState::z,           19},
+-    { &InputState::up,          17},
++    { &InputState::z,           20},
++    { &InputState::up,          18},
+ 
+     { &InputState::r,           27},
+     { &InputState::y,           22},
+-    { &InputState::lightshield, 20},
+-    { &InputState::midshield,   18},
++    { &InputState::lightshield, 19},
++    { &InputState::midshield,   17},
+ #else
+ ALTMAP
+ #endif
+--- a/src/input/GpioButtonInput.cpp
++++ b/src/input/GpioButtonInput.cpp
+@@ -20,6 +20,9 @@
+ void GpioButtonInput::UpdateInputs(InputState &inputs) {
+     for (size_t i = 0; i < _button_count; i++) {
+         GpioButtonMapping button_mapping = _button_mappings[i];
+         inputs.*(button_mapping.button) = !gpio::read_digital(button_mapping.pin);
+     }
++    // Tadpole: Start only works while Mod Y is held.
++    // BOOTSEL via button hold now requires Mod Y + Start on plug-in.
++    inputs.start = inputs.start && inputs.mod_y;
+ }
