@@ -20,6 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: CarVac/HayBox
+          ref: e0e6cbb3703880de86325a6002bd64238fd1b652 # CarVac master as of 2025-04-23
           path: upstream-haybox
           persist-credentials: false
 
